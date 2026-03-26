@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PracDi Digital Card</title>
+  <title>PracDi Monetizable Card Builder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -29,67 +29,25 @@
       font-family:Inter, Arial, sans-serif;
       color:var(--text);
     }
-
     .wrap{
       max-width:1200px;
       margin:0 auto;
       display:grid;
-      grid-template-columns:1fr;
+      grid-template-columns: 420px 1fr;
       gap:18px;
     }
-
-    .topbar{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-      gap:10px;
-    }
-
-    .small-btn{
-      border:none;
-      border-radius:12px;
-      padding:10px 14px;
-      background:#eef2ff;
-      color:var(--text);
-      cursor:pointer;
-      font-size:14px;
-      border:1px solid #bfd0ff;
-    }
-
     .panel, .preview-shell{
       background:#fff;
       border-radius:24px;
       padding:18px;
       box-shadow:0 0 0 1px rgba(0,0,0,.04);
     }
-
-    .builder-hidden{
-      display:none;
-    }
-
-    h1,h2,h3{
-      margin:0 0 12px 0;
-    }
-
-    .sub{
-      color:var(--muted);
-      font-size:14px;
-      margin-bottom:14px;
-    }
-
-    .section{
-      border-top:1px solid var(--border);
-      padding-top:14px;
-      margin-top:14px;
-    }
-
-    .label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
+    h1,h2,h3{ margin:0 0 12px 0; }
+    .panel h1{ font-size:26px; }
+    .sub{ color:var(--muted); font-size:14px; margin-bottom:14px; }
+    .section{ border-top:1px solid var(--border); padding-top:14px; margin-top:14px; }
+    .label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    
     input, select, textarea{
       width:100%;
       border:1px solid #ccd5e3;
@@ -99,461 +57,81 @@
       background:#fff;
       margin-bottom:10px;
     }
-
-    textarea{
-      min-height:80px;
-      resize:vertical;
+    input:disabled, select:disabled, textarea:disabled {
+      background: #f5f7fa;
+      cursor: not-allowed;
+      opacity: 0.7;
     }
+    
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .btn{ border:none; border-radius:14px; padding:12px 14px; cursor:pointer; font-size:15px; font-weight:600; transition: 0.2s; }
+    .btn-primary{ background:var(--primary); color:#fff; }
+    .btn-primary:hover{ background:var(--primary-dark); }
+    .btn-light{ background:#eef2ff; color:var(--text); border:1px solid #bfd0ff; }
+    .btn-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
-    .grid-2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
+    /* Preview Styles */
+    .preview-shell{ background:var(--preview-bg); min-height:760px; }
+    .preview-topbar{ color:#fff; font-size:12px; text-align:center; margin-bottom:12px; opacity:.95; }
+    .card-preview{ max-width:420px; margin:0 auto; background:#fff; border-radius:26px; overflow:hidden; box-shadow:0 16px 28px rgba(0,0,0,.18); }
+    .card-page{ display:none; padding:18px; }
+    .card-page.active{ display:block; }
 
-    .btn{
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      cursor:pointer;
-      font-size:15px;
-    }
+    .hero{ background:var(--header-grad); color:#fff; border-radius:20px; padding:18px; display:grid; grid-template-columns:110px 1fr; gap:14px; align-items:center; }
+    .logo-box{ width:110px; height:110px; border-radius:22px; background:#f3f3f3; display:flex; align-items:center; justify-content:center; overflow:hidden; color:#444; font-size:13px; text-align:center; }
+    .logo-box img{ width:100%; height:100%; object-fit:cover; }
+    .title-box h2{ margin:0 0 6px 0; font-size:30px; line-height:1.02; }
 
-    .btn-primary{
-      background:var(--primary);
-      color:#fff;
-    }
+    /* New Social Boxes */
+    .social-box{ border-radius:14px; padding:12px; text-align:center; color:#fff; font-weight:600; text-decoration: none; display: block; font-size: 14px; }
+    .fb { background:#1877f2; }
+    .ig { background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); }
+    .web { background:#334155; }
 
-    .btn-light{
-      background:#eef2ff;
-      color:var(--text);
-      border:1px solid #bfd0ff;
-    }
+    .quick-grid{ margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .quick-box{ background:#fff; border:1px solid var(--border); border-radius:18px; min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; text-align:center; }
+    .quick-action{ text-decoration:none; background:var(--primary); color:#fff; padding:10px 14px; border-radius:12px; display:inline-block; font-weight:600; }
+    
+    .qr-box{ width:80px; height:80px; }
 
-    .btn-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
+    .sponsor-box{ margin-top:14px; border-radius:16px; background:var(--sponsor-grad); min-height:74px; display:grid; grid-template-columns:80px 1fr; gap:10px; align-items:center; padding:10px 12px; color:#111; }
+    .sponsor-logo{ width:68px; height:68px; background:#fff; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:11px; }
+    .sponsor-logo img{ width:100%; height:100%; object-fit:cover; }
 
-    .preview-shell{
-      background:var(--preview-bg);
-      min-height:760px;
-    }
+    .nav{ display:flex; gap:10px; justify-content:center; padding:14px 0 4px 0; }
+    .nav button{ border:none; border-radius:999px; padding:8px 12px; cursor:pointer; background:#eef2ff; color:var(--text); }
 
-    .card-preview{
-      max-width:420px;
-      margin:0 auto;
-      background:#fff;
-      border-radius:26px;
-      overflow:hidden;
-      box-shadow:0 16px 28px rgba(0,0,0,.18);
-    }
+    .info-list{ display:grid; gap:10px; }
+    .info-item{ border:1px solid var(--border); border-radius:16px; padding:12px 14px; background:#fbfcff; }
+    .info-item b{ display:block; margin-bottom:4px; font-size: 12px; color: var(--muted); text-transform: uppercase; }
 
-    .card-page{
-      display:none;
-      padding:18px;
-    }
-
-    .card-page.active{
-      display:block;
-    }
-
-    .hero{
-      background:var(--header-grad);
-      color:#fff;
-      border-radius:20px;
-      padding:18px;
-      display:grid;
-      grid-template-columns:110px 1fr;
-      gap:14px;
-      align-items:center;
-    }
-
-    .logo-box{
-      width:110px;
-      height:110px;
-      border-radius:22px;
-      background:#f3f3f3;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      color:#444;
-      font-size:13px;
-      text-align:center;
-    }
-
-    .logo-box img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-
-    .title-box h2{
-      margin:0 0 6px 0;
-      font-size:30px;
-      line-height:1.02;
-    }
-
-    .title-box .job{
-      font-size:16px;
-      opacity:.95;
-      margin-bottom:4px;
-    }
-
-    .title-box .company{
-      font-size:13px;
-      opacity:.85;
-    }
-
-    .quick-grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    .quick-box{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:18px;
-      min-height:96px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:10px;
-      text-align:center;
-    }
-
-    .quick-action{
-      text-decoration:none;
-      background:var(--primary);
-      color:#fff;
-      padding:10px 14px;
-      border-radius:12px;
-      display:inline-block;
-      font-weight:600;
-    }
-
-    .qr-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-    }
-
-    .qr-box{
-      width:86px;
-      height:86px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#fff;
-    }
-
-    .sponsor-box{
-      margin-top:14px;
-      border-radius:16px;
-      background:var(--sponsor-grad);
-      min-height:64px;
-      display:grid;
-      grid-template-columns:70px 1fr;
-      gap:10px;
-      align-items:center;
-      padding:10px 12px;
-      color:#111;
-    }
-
-    .sponsor-logo{
-      width:56px;
-      height:56px;
-      background:#fff;
-      border-radius:12px;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:10px;
-      text-align:center;
-    }
-
-    .sponsor-logo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-
-    .sponsor-text{
-      font-weight:600;
-      font-size:13px;
-      line-height:1.2;
-    }
-
-    .sponsor-tiny{
-      font-size:10px;
-      opacity:.75;
-      font-weight:400;
-    }
-
-    .nav{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:14px 8px 4px 8px;
-    }
-
-    .nav button{
-      border:none;
-      border-radius:999px;
-      padding:8px 12px;
-      cursor:pointer;
-      background:#eef2ff;
-      color:var(--text);
-      font-size:18px;
-      min-width:44px;
-    }
-
-    .page-indicator{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .info-list{
-      display:grid;
-      gap:10px;
-    }
-
-    .info-item{
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:12px 14px;
-      background:#fbfcff;
-    }
-
-    .info-item b{
-      display:block;
-      margin-bottom:4px;
-    }
-
-    .social-row{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-top:8px;
-    }
-
-    .social-icon{
-      width:42px;
-      height:42px;
-      border-radius:999px;
-      background:#eef2ff;
-      border:1px solid #bfd0ff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      color:var(--text);
-      font-size:20px;
-    }
-
-    .page-head{
-      font-size:24px;
-      text-align:center;
-      margin-bottom:14px;
-    }
-
-    .flipbook-card{
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:18px;
-      background:#fbfcff;
-      text-align:center;
-    }
-
-    .watermark{
-      text-align:center;
-      color:#7a7a7a;
-      font-size:12px;
-      margin-top:14px;
-    }
-
-    .tracker{
-      margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-      background:#fbfcff;
-    }
-
-    .tracker-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .badge{
-      display:inline-block;
-      border-radius:999px;
-      padding:6px 10px;
-      font-size:12px;
-      background:#eef2ff;
-      border:1px solid #bfd0ff;
-      margin-bottom:8px;
-    }
-
-    .login-box{
-      display:none;
-      margin-bottom:12px;
-      gap:10px;
-    }
-
-    .login-box.show{
-      display:grid;
-      grid-template-columns:1fr auto auto;
-    }
-
-    .edit-mode{
-      display:none;
-      text-align:center;
-      font-size:12px;
-      color:#fff;
-      margin-bottom:8px;
-    }
-
-    .edit-mode.show{
-      display:block;
-    }
+    .watermark{ text-align:center; color:#7a7a7a; font-size:12px; margin-top:14px; }
 
     @media (max-width: 980px){
-      .grid-2{
-        grid-template-columns:1fr;
-      }
-      .login-box.show{
-        grid-template-columns:1fr;
-      }
+      .wrap{ grid-template-columns:1fr; }
+      .panel{ order:2; }
+      .preview-shell{ order:1; }
     }
   </style>
 </head>
 <body>
+
   <div class="wrap">
-
-    <div class="topbar">
-      <button class="small-btn" onclick="toggleLoginBox()">Login</button>
-    </div>
-
-    <div class="login-box" id="loginBox">
-      <input id="loginCode" type="password" placeholder="Enter login code">
-      <button class="small-btn" onclick="loginBuilder()">Open Builder</button>
-      <button class="small-btn" onclick="toggleLoginBox()">Close</button>
-    </div>
-
-    <div class="preview-shell" id="previewShell">
-      <div class="edit-mode" id="editModeLabel">Edit Mode Active</div>
-
-      <div class="card-preview" id="cardPreview">
-        <!-- Page 1 -->
-        <div class="card-page active" id="page1">
-          <div class="hero">
-            <div class="logo-box" id="logoBox">
-              Upload<br>Logo / Photo
-            </div>
-            <div class="title-box">
-              <h2 id="pvName">Your Name</h2>
-              <div class="job" id="pvJob">Your Job Title</div>
-              <div class="company" id="pvCompany">Your Company</div>
-            </div>
-          </div>
-
-          <div class="quick-grid">
-            <div class="quick-box">
-              <div style="font-size:12px;color:#66758a;margin-bottom:8px;">Quick Action</div>
-              <a href="#" id="primaryActionBtn" class="quick-action">Call</a>
-            </div>
-
-            <div class="quick-box">
-              <div class="qr-wrap">
-                <div class="qr-box" id="qrcode"></div>
-                <div style="font-size:12px;color:#66758a;">Scan full profile</div>
-              </div>
-            </div>
-          </div>
-
-          <a href="#" id="sponsorAnchor" target="_blank" style="text-decoration:none;color:inherit;">
-            <div class="sponsor-box" id="sponsorBox">
-              <div class="sponsor-logo" id="sponsorLogoBox">Logo</div>
-              <div class="sponsor-text">
-                <div id="pvSponsorName">Sponsor Name</div>
-                <div class="sponsor-tiny">optional partner placement</div>
-              </div>
-            </div>
-          </a>
-
-          <div class="watermark" id="watermark">Powered by PracDi</div>
-        </div>
-
-        <!-- Page 2 -->
-        <div class="card-page" id="page2">
-          <div class="page-head">Profile Info</div>
-          <div class="info-list">
-            <div class="info-item"><b>Name</b><span id="infoName">Your Name</span></div>
-            <div class="info-item"><b>Address</b><span id="infoAddress">Your Address</span></div>
-            <div class="info-item"><b>Email</b><span id="infoEmail">name@email.com</span></div>
-            <div class="info-item"><b>Phone</b><span id="infoPhone">+59995120536</span></div>
-            <div class="info-item"><b>About</b><span id="infoAbout">Add your bio here.</span></div>
-            <div class="info-item"><b>Services</b><span id="infoServices">Add your services here.</span></div>
-          </div>
-
-          <div class="social-row" id="socialRow"></div>
-        </div>
-
-        <!-- Page 3 -->
-        <div class="card-page" id="page3">
-          <div class="page-head">More Info</div>
-
-          <div class="flipbook-card">
-            <a id="flipbookBtn" class="quick-action" target="_blank" href="#">View Brochure</a>
-          </div>
-
-          <div class="tracker" id="trackerBox" style="display:none;">
-            <h3 style="margin-bottom:8px;">Time Tracker</h3>
-            <div id="trackerStatus">Status: Not running</div>
-            <div id="trackerToday" style="margin-top:6px;">Today Total: 0h 0m</div>
-            <div class="tracker-row">
-              <button class="btn btn-primary" onclick="startWork()">Start Work</button>
-              <button class="btn btn-light" onclick="stopWork()">Stop Work</button>
-            </div>
-          </div>
-
-          <div class="tracker" id="upgradeInfoBox" style="display:none;">
-            <div><b>NFC:</b> <span id="showNfc">No</span></div>
-            <div style="margin-top:6px;"><b>vCard:</b> <span id="showVcard">No</span></div>
-            <div style="margin-top:6px;"><b>Video:</b> <a id="videoAnchor" href="#" target="_blank">Not set</a></div>
-          </div>
-        </div>
-
-        <div class="nav">
-          <button onclick="prevPage()">&lt;</button>
-          <div class="page-indicator" id="pageIndicator">1 / 3</div>
-          <button onclick="nextPage()">&gt;</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel builder-hidden" id="builderPanel">
+    <div class="panel">
       <h1>Card Builder</h1>
-      <div class="sub">Hidden by default. Opens only after login.</div>
+      <div class="sub">Updates deduct from your balance only when you <b>Publish</b>.</div>
 
       <div class="section">
-        <h3>Card Settings</h3>
+        <label class="label">Updates Remaining</label>
+        <input id="updatesLeft" type="text" value="5 / 5" readonly style="font-weight:bold; color:var(--primary);" />
+      </div>
+
+      <div class="section">
+        <h3>Design</h3>
         <div class="grid-2">
           <div>
-            <label class="label">Color Scheme</label>
-            <select id="themeSelect">
+            <label class="label">Theme</label>
+            <select id="themeSelect" onchange="applyChanges()">
               <option value="violet">Violet Blue</option>
               <option value="green">Green Dark</option>
               <option value="sunset">Sunset Orange</option>
@@ -562,425 +140,208 @@
             </select>
           </div>
           <div>
-            <label class="label">Font Style</label>
-            <select id="fontSelect">
+            <label class="label">Font</label>
+            <select id="fontSelect" onchange="applyChanges()">
               <option value="inter">Inter</option>
               <option value="poppins">Poppins</option>
               <option value="montserrat">Montserrat</option>
-              <option value="playfair">Playfair Display</option>
-              <option value="roboto">Roboto</option>
             </select>
           </div>
         </div>
-
-        <div class="grid-2">
-          <div>
-            <label class="label">Plan</label>
-            <select id="planSelect">
-              <option value="basic">Basic</option>
-              <option value="upgrade">Upgrade</option>
-            </select>
-          </div>
-          <div>
-            <label class="label">Primary Action</label>
-            <select id="actionType">
-              <option value="call">Call</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="email">Email</option>
-              <option value="website">Website</option>
-            </select>
-          </div>
-        </div>
-
-        <label class="label">Updates Remaining</label>
-        <input id="updatesLeft" type="text" value="5 / 5" />
       </div>
 
       <div class="section">
-        <h3>Photo / Logo</h3>
-        <div class="sub">Accepted: JPG, JPEG, PNG, WEBP • Recommended 800×800 • Max 2MB ideal</div>
-        <input id="logoUpload" type="file" accept=".jpg,.jpeg,.png,.webp" />
-      </div>
-
-      <div class="section">
-        <h3>Basic Information</h3>
+        <h3>Content</h3>
         <label class="label">Full Name</label>
-        <input id="fullName" type="text" value="Your Name" />
-
+        <input id="fullName" type="text" value="Malia Bonilla" />
         <label class="label">Job Title</label>
-        <input id="jobTitle" type="text" value="Your Job Title" />
-
-        <label class="label">Company Name</label>
-        <input id="companyName" type="text" value="Your Company" />
-      </div>
-
-      <div class="section">
-        <h3>Contact Information</h3>
+        <input id="jobTitle" type="text" value="Product Developer" />
+        
         <div class="grid-2">
           <div>
             <label class="label">Email</label>
-            <input id="email" type="email" value="name@email.com" />
+            <input id="email" type="email" value="hello@pracdi.com" />
           </div>
           <div>
             <label class="label">Phone</label>
-            <input id="phone" type="text" value="+59995120536" />
+            <input id="phone" type="text" value="+5999000000" />
           </div>
         </div>
-
-        <label class="label">Address</label>
-        <input id="address" type="text" value="Your Address" />
-
-        <label class="label">Website</label>
-        <input id="website" type="text" value="https://example.com" />
+        
+        <label class="label">Website URL</label>
+        <input id="website" type="text" value="https://pracdi.com" />
+        <label class="label">Facebook URL</label>
+        <input id="facebook" type="text" value="#" />
+        <label class="label">Instagram URL</label>
+        <input id="instagram" type="text" value="#" />
       </div>
 
       <div class="section">
-        <h3>Social Media</h3>
-        <div class="grid-2">
-          <div>
-            <label class="label">Facebook</label>
-            <input id="facebook" type="text" value="" />
-          </div>
-          <div>
-            <label class="label">Instagram</label>
-            <input id="instagram" type="text" value="" />
-          </div>
-        </div>
-        <div class="grid-2">
-          <div>
-            <label class="label">LinkedIn</label>
-            <input id="linkedin" type="text" value="" />
-          </div>
-          <div>
-            <label class="label">TikTok</label>
-            <input id="tiktok" type="text" value="" />
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>About & Services</h3>
-        <label class="label">About</label>
-        <textarea id="about">Add your bio here.</textarea>
-
-        <label class="label">Services / Skills</label>
-        <textarea id="services">Add your services here.</textarea>
-      </div>
-
-      <div class="section">
-        <h3>Brochure / PDF</h3>
-        <label class="label">Upload PDF (local)</label>
-        <input id="pdfUpload" type="file" accept=".pdf" />
-
-        <label class="label">Or PDF / Brochure Link</label>
-        <input id="flipbookLink" type="text" value="" placeholder="https://example.com/brochure.pdf" />
-      </div>
-
-      <div class="section">
-        <h3>Sponsor Area</h3>
-        <label class="label">Sponsor Name</label>
-        <input id="sponsorName" type="text" value="Sponsor Name" />
-
-        <label class="label">Sponsor Link</label>
-        <input id="sponsorLink" type="text" value="https://example.com" />
-
-        <label class="label">Sponsor Logo</label>
-        <input id="sponsorUpload" type="file" accept=".jpg,.jpeg,.png,.webp" />
-      </div>
-
-      <div class="section">
-        <h3>Upgrade Tools</h3>
-        <div class="grid-2">
-          <div>
-            <label class="label">NFC Enabled</label>
-            <select id="nfcEnabled">
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-          <div>
-            <label class="label">vCard Enabled</label>
-            <select id="vcardEnabled">
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-        </div>
-
-        <label class="label">YouTube / Video Link (upgrade)</label>
-        <input id="videoLink" type="text" value="" placeholder="https://youtube.com/..." />
-      </div>
-
-      <div class="section">
+        <h3>Publishing</h3>
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="applyChanges()">Save Changes</button>
-          <button class="btn btn-light" onclick="resetForm()">Reset Form</button>
+          <button class="btn btn-primary" onclick="applyChanges()">Preview</button>
+          <button class="btn btn-light" onclick="resetForm()">Reset</button>
+        </div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-primary" onclick="publishCard()" style="background:#10b981;">Publish Now</button>
+          <button class="btn btn-light" onclick="unlockEditMode()">Unlock Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-shell" id="previewShell">
+      <div class="preview-topbar">Live Preview</div>
+
+      <div class="card-preview" id="cardPreview">
+        <div class="card-page active" id="page1">
+          <div class="hero">
+            <div class="logo-box" id="logoBox">Logo</div>
+            <div class="title-box">
+              <h2 id="pvName">Your Name</h2>
+              <div id="pvJob" style="opacity:0.9">Job Title</div>
+            </div>
+          </div>
+
+          <div class="quick-grid">
+            <div class="quick-box">
+              <span style="font-size:11px; color:var(--muted); margin-bottom:5px;">Primary</span>
+              <a href="#" id="primaryActionBtn" class="quick-action">Contact</a>
+            </div>
+            <div class="quick-box">
+              <div id="qrcode"></div>
+            </div>
+          </div>
+
+          <div class="sponsor-box" id="sponsorBox">
+            <div class="sponsor-logo">Sponsor</div>
+            <div class="sponsor-text">Your Sponsor Here</div>
+          </div>
+          <div class="watermark" id="watermark">Powered by PracDi</div>
+        </div>
+
+        <div class="card-page" id="page2">
+          <h3 style="text-align:center">Contact & Social</h3>
+          <div class="info-list">
+            <div class="info-item">
+              <b>Links</b>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px;">
+                <a id="fbLink" class="social-box fb" target="_blank">Facebook</a>
+                <a id="igLink" class="social-box ig" target="_blank">Instagram</a>
+                <a id="webLink" class="social-box web" target="_blank" style="grid-column:span 2;">Website</a>
+              </div>
+            </div>
+            <div class="info-item"><b>Email</b><span id="infoEmail"></span></div>
+            <div class="info-item"><b>Phone</b><span id="infoPhone"></span></div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button onclick="showPage(1)">Home</button>
+          <button onclick="showPage(2)">Social</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const LOGIN_CODE = "112344";
-    let logoData = "";
-    let sponsorData = "";
-    let trackerStart = null;
-    let trackerMinutesToday = 0;
+    let isPublished = false;
+    let maxUpdates = 5;
+    let updatesRemaining = 5;
     let qr = null;
-    let currentPage = 1;
-    let localPdfUrl = "";
 
     const themes = {
-      violet: {
-        previewBg: "linear-gradient(135deg,#6d7cff,#8f5cff)",
-        heroGrad: "linear-gradient(135deg,#6d7cff,#8f5cff)",
-        sponsorGrad: "linear-gradient(90deg,#ffb347,#ffd86f)"
-      },
-      green: {
-        previewBg: "linear-gradient(135deg,#10b981,#0f172a)",
-        heroGrad: "linear-gradient(135deg,#10b981,#0f172a)",
-        sponsorGrad: "linear-gradient(90deg,#bbf7d0,#86efac)"
-      },
-      sunset: {
-        previewBg: "linear-gradient(135deg,#ff7eb3,#ffd166)",
-        heroGrad: "linear-gradient(135deg,#ff7eb3,#ffd166)",
-        sponsorGrad: "linear-gradient(90deg,#f59e0b,#fde68a)"
-      },
-      gold: {
-        previewBg: "linear-gradient(135deg,#111111,#d4af37)",
-        heroGrad: "linear-gradient(135deg,#111111,#d4af37)",
-        sponsorGrad: "linear-gradient(90deg,#9a6c00,#f7d76a)"
-      },
-      clean: {
-        previewBg: "linear-gradient(135deg,#dbeafe,#93c5fd)",
-        heroGrad: "linear-gradient(135deg,#2563eb,#60a5fa)",
-        sponsorGrad: "linear-gradient(90deg,#dbeafe,#bfdbfe)"
-      }
+      violet: { previewBg: "linear-gradient(135deg,#6d7cff,#8f5cff)", heroGrad: "linear-gradient(135deg,#6d7cff,#8f5cff)", sponsorGrad: "linear-gradient(90deg,#ffb347,#ffd86f)" },
+      green: { previewBg: "linear-gradient(135deg,#10b981,#0f172a)", heroGrad: "linear-gradient(135deg,#10b981,#0f172a)", sponsorGrad: "linear-gradient(90deg,#bbf7d0,#86efac)" },
+      sunset: { previewBg: "linear-gradient(135deg,#ff7eb3,#ffd166)", heroGrad: "linear-gradient(135deg,#ff7eb3,#ffd166)", sponsorGrad: "linear-gradient(90deg,#f59e0b,#fde68a)" },
+      gold: { previewBg: "linear-gradient(135deg,#111111,#d4af37)", heroGrad: "linear-gradient(135deg,#111111,#d4af37)", sponsorGrad: "linear-gradient(90deg,#9a6c00,#f7d76a)" },
+      clean: { previewBg: "linear-gradient(135deg,#dbeafe,#93c5fd)", heroGrad: "linear-gradient(135deg,#2563eb,#60a5fa)", sponsorGrad: "linear-gradient(90deg,#dbeafe,#bfdbfe)" }
     };
 
     const fonts = {
-      inter: "Inter, Arial, sans-serif",
-      poppins: "Poppins, Arial, sans-serif",
-      montserrat: "Montserrat, Arial, sans-serif",
-      playfair: "'Playfair Display', serif",
-      roboto: "Roboto, Arial, sans-serif"
+      inter: "Inter, sans-serif",
+      poppins: "Poppins, sans-serif",
+      montserrat: "Montserrat, sans-serif"
     };
 
-    function toggleLoginBox(){
-      document.getElementById("loginBox").classList.toggle("show");
-    }
-
-    function loginBuilder(){
-      const val = document.getElementById("loginCode").value;
-      if(val === LOGIN_CODE){
-        document.getElementById("builderPanel").classList.remove("builder-hidden");
-        document.getElementById("editModeLabel").classList.add("show");
-        document.getElementById("loginBox").classList.remove("show");
-        document.getElementById("loginCode").value = "";
-        alert("Builder unlocked.");
-      } else {
-        alert("Wrong code.");
-      }
-    }
-
     function showPage(n){
-      currentPage = n;
       document.querySelectorAll(".card-page").forEach(p => p.classList.remove("active"));
       document.getElementById("page" + n).classList.add("active");
-      document.getElementById("pageIndicator").textContent = `${n} / 3`;
     }
 
-    function prevPage(){
-      currentPage = currentPage === 1 ? 3 : currentPage - 1;
-      showPage(currentPage);
+    function refreshUpdatesDisplay(){
+      document.getElementById("updatesLeft").value = `${updatesRemaining} / ${maxUpdates}`;
     }
 
-    function nextPage(){
-      currentPage = currentPage === 3 ? 1 : currentPage + 1;
-      showPage(currentPage);
-    }
-
-    function fileToDataUrl(file, cb){
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = e => cb(e.target.result);
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById("logoUpload").addEventListener("change", function(){
-      fileToDataUrl(this.files[0], (data) => {
-        logoData = data;
-        applyChanges();
+    function setEditMode(enabled){
+      document.querySelectorAll("input, select, textarea").forEach(el => {
+        if(el.id !== "updatesLeft") el.disabled = !enabled;
       });
-    });
+    }
 
-    document.getElementById("sponsorUpload").addEventListener("change", function(){
-      fileToDataUrl(this.files[0], (data) => {
-        sponsorData = data;
-        applyChanges();
-      });
-    });
-
-    document.getElementById("pdfUpload").addEventListener("change", function(){
-      const file = this.files[0];
-      if(file){
-        localPdfUrl = URL.createObjectURL(file);
-        applyChanges();
-      }
-    });
-
-    function buildSocialIcons(links){
-      const row = document.getElementById("socialRow");
-      row.innerHTML = "";
-
-      const items = [
-        { key:"facebook", icon:"f", url:links.facebook },
-        { key:"instagram", icon:"◎", url:links.instagram },
-        { key:"linkedin", icon:"in", url:links.linkedin },
-        { key:"tiktok", icon:"♪", url:links.tiktok }
-      ];
-
-      items.forEach(item => {
-        if(item.url){
-          const a = document.createElement("a");
-          a.className = "social-icon";
-          a.href = item.url;
-          a.target = "_blank";
-          a.textContent = item.icon;
-          row.appendChild(a);
-        }
-      });
+    function showPublishBanner(message, color = "#10b981"){
+      let banner = document.getElementById("publishBanner") || document.createElement("div");
+      banner.id = "publishBanner";
+      banner.style.cssText = `position:fixed; top:20px; left:50%; transform:translateX(-50%); background:${color}; color:white; padding:12px 24px; border-radius:50px; z-index:9999; font-weight:600; box-shadow:0 10px 20px rgba(0,0,0,0.2);`;
+      banner.textContent = message;
+      if(!document.getElementById("publishBanner")) document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 4000);
     }
 
     function applyChanges(){
       const theme = document.getElementById("themeSelect").value;
       const font = document.getElementById("fontSelect").value;
-      const plan = document.getElementById("planSelect").value;
-      const actionType = document.getElementById("actionType").value;
+      const name = document.getElementById("fullName").value;
+      const job = document.getElementById("jobTitle").value;
+      const website = document.getElementById("website").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
 
-      const fullName = document.getElementById("fullName").value || "Your Name";
-      const jobTitle = document.getElementById("jobTitle").value || "Your Job Title";
-      const companyName = document.getElementById("companyName").value || "Your Company";
-      const email = document.getElementById("email").value || "";
-      const phone = document.getElementById("phone").value || "";
-      const address = document.getElementById("address").value || "";
-      const website = document.getElementById("website").value || "";
-      const facebook = document.getElementById("facebook").value || "";
-      const instagram = document.getElementById("instagram").value || "";
-      const linkedin = document.getElementById("linkedin").value || "";
-      const tiktok = document.getElementById("tiktok").value || "";
-      const about = document.getElementById("about").value || "";
-      const services = document.getElementById("services").value || "";
-      const externalPdfLink = document.getElementById("flipbookLink").value || "";
-      const sponsorName = document.getElementById("sponsorName").value || "Sponsor Name";
-      const sponsorLink = document.getElementById("sponsorLink").value || "#";
-      const nfcEnabled = document.getElementById("nfcEnabled").value;
-      const vcardEnabled = document.getElementById("vcardEnabled").value;
-      const videoLink = document.getElementById("videoLink").value || "";
-
-      document.body.style.fontFamily = fonts[font];
+      // Update Preview Styles
       document.getElementById("cardPreview").style.fontFamily = fonts[font];
       document.getElementById("previewShell").style.background = themes[theme].previewBg;
       document.querySelector(".hero").style.background = themes[theme].heroGrad;
       document.getElementById("sponsorBox").style.background = themes[theme].sponsorGrad;
 
-      document.getElementById("pvName").textContent = fullName;
-      document.getElementById("pvJob").textContent = jobTitle;
-      document.getElementById("pvCompany").textContent = companyName;
-
-      document.getElementById("infoName").textContent = fullName;
-      document.getElementById("infoAddress").textContent = address;
+      // Update Text
+      document.getElementById("pvName").textContent = name;
+      document.getElementById("pvJob").textContent = job;
       document.getElementById("infoEmail").textContent = email;
       document.getElementById("infoPhone").textContent = phone;
-      document.getElementById("infoAbout").textContent = about;
-      document.getElementById("infoServices").textContent = services;
 
-      if(logoData){
-        document.getElementById("logoBox").innerHTML = `<img src="${logoData}" alt="logo">`;
-      }
+      // Update Social Boxes
+      document.getElementById("fbLink").href = document.getElementById("facebook").value || "#";
+      document.getElementById("igLink").href = document.getElementById("instagram").value || "#";
+      document.getElementById("webLink").href = website || "#";
 
-      if(sponsorData){
-        document.getElementById("sponsorLogoBox").innerHTML = `<img src="${sponsorData}" alt="sponsor">`;
-      } else {
-        document.getElementById("sponsorLogoBox").textContent = "Logo";
-      }
-
-      document.getElementById("pvSponsorName").textContent = sponsorName;
-      document.getElementById("sponsorAnchor").href = sponsorLink || "#";
-
-      const actionBtn = document.getElementById("primaryActionBtn");
-      if(actionType === "call"){
-        actionBtn.textContent = "Call";
-        actionBtn.href = "tel:" + phone;
-      } else if(actionType === "whatsapp"){
-        actionBtn.textContent = "WhatsApp";
-        const waPhone = phone.replace(/[^\d]/g, "");
-        actionBtn.href = "https://wa.me/" + waPhone;
-      } else if(actionType === "email"){
-        actionBtn.textContent = "Email";
-        actionBtn.href = "mailto:" + email;
-      } else {
-        actionBtn.textContent = "Website";
-        actionBtn.href = website || "#";
-      }
-
-      const brochureTarget = localPdfUrl || externalPdfLink || "#";
-      document.getElementById("flipbookBtn").href = brochureTarget;
-
-      document.getElementById("showNfc").textContent = nfcEnabled === "yes" ? "Enabled" : "No";
-      document.getElementById("showVcard").textContent = vcardEnabled === "yes" ? "Enabled" : "No";
-
-      const videoAnchor = document.getElementById("videoAnchor");
-      if(videoLink){
-        videoAnchor.textContent = "Open Video";
-        videoAnchor.href = videoLink;
-      } else {
-        videoAnchor.textContent = "Not set";
-        videoAnchor.href = "#";
-      }
-
-      const basic = plan === "basic";
-      document.getElementById("watermark").style.display = basic ? "block" : "none";
-      document.getElementById("trackerBox").style.display = basic ? "none" : "block";
-      document.getElementById("upgradeInfoBox").style.display = basic ? "none" : "block";
-
-      buildSocialIcons({ facebook, instagram, linkedin, tiktok });
-      buildQr(website || window.location.href);
+      // QR Code
+      const qrBox = document.getElementById("qrcode");
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, { text: website || window.location.href, width: 80, height: 80 });
     }
 
-    function buildQr(text){
-      const box = document.getElementById("qrcode");
-      box.innerHTML = "";
-      qr = new QRCode(box, {
-        text: text,
-        width: 80,
-        height: 80
-      });
+    function publishCard(){
+      if(isPublished) { alert("Already published and locked."); return; }
+      if(updatesRemaining <= 0) { alert("No updates left!"); return; }
+
+      applyChanges();
+      updatesRemaining--;
+      isPublished = true;
+      refreshUpdatesDisplay();
+      setEditMode(false);
+      showPublishBanner(`✅ Card Published! (${updatesRemaining} updates left)`);
     }
 
-    function resetForm(){
-      window.location.reload();
+    function unlockEditMode(){
+      if(updatesRemaining <= 0) { alert("Cannot unlock. 0 updates left."); return; }
+      isPublished = false;
+      setEditMode(true);
+      showPublishBanner("✏️ Edit Mode Enabled", "#3167e3");
     }
 
-    function startWork(){
-      if(trackerStart) return;
-      trackerStart = new Date();
-      document.getElementById("trackerStatus").textContent = "Status: Running...";
-    }
+    function resetForm(){ if(confirm("Reset everything?")) window.location.reload(); }
 
-    function stopWork(){
-      if(!trackerStart) return;
-      const now = new Date();
-      const minutes = Math.round((now - trackerStart) / 60000);
-      trackerMinutesToday += minutes;
-      trackerStart = null;
-      const h = Math.floor(trackerMinutesToday / 60);
-      const m = trackerMinutesToday % 60;
-      document.getElementById("trackerStatus").textContent = "Status: Not running";
-      document.getElementById("trackerToday").textContent = `Today Total: ${h}h ${m}m`;
-    }
-
-    showPage(1);
+    // Init
+    refreshUpdatesDisplay();
     applyChanges();
   </script>
 </body>
