@@ -3,208 +3,1262 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PracDi Digital Card</title>
+  <title>PracDi Card Builder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#f8fafc; --text:#1e293b; --primary:#3167e3; --gold:#fbbf24; }
-    *{box-sizing:border-box}
-    body{ margin:0; font-family:Inter, sans-serif; background:var(--bg); display:flex; justify-content:center; }
-    
-    /* THE CARD */
-    .card-shell{ width:100%; max-width:420px; min-height:850px; background:#fff; border-radius:35px; box-shadow:0 20px 40px rgba(0,0,0,0.1); position:relative; overflow:hidden; margin:10px; display:flex; flex-direction:column; }
-    .card-page{ display:none; padding:25px; flex-grow:1; }
-    .card-page.active{ display:block; animation: fadeIn 0.3s; }
-    
-    /* Components */
-    .hero-box{ background:linear-gradient(135deg,#6d7cff,#8f5cff); color:#fff; border-radius:24px; padding:20px; display:grid; grid-template-columns:100px 1fr; gap:15px; align-items:center; }
-    .profile-img{ width:100px; height:100px; border-radius:18px; background:rgba(255,255,255,0.2); overflow:hidden; }
-    .profile-img img{ width:100%; height:100%; object-fit:cover; }
-    
-    .action-row{ display:grid; grid-template-columns:1fr 1fr; gap:15px; margin:20px 0; align-items:center; }
-    .btn-main{ background:var(--primary); color:#fff; padding:15px; border-radius:15px; text-decoration:none; text-align:center; font-weight:700; }
-    
-    .sponsor-bar{ background:linear-gradient(90deg,#ffb347,#ffd86f); border-radius:18px; padding:12px; display:flex; align-items:center; gap:12px; text-decoration:none; color:#111; margin-top:10px; }
-    .sponsor-logo{ width:50px; height:50px; border-radius:10px; background:#fff; overflow:hidden; }
-    
-    .contact-line{ display:flex; align-items:center; gap:10px; padding:12px; background:#f1f5f9; border-radius:12px; margin-bottom:8px; font-size:14px; text-decoration:none; color:inherit; }
-    
-    /* Navigation */
-    .nav-nav{ padding:20px; border-top:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; }
-    .arrow-btn{ background:none; border:none; color:var(--primary); font-size:24px; cursor:pointer; }
-    .watermark{ text-align:center; font-size:10px; color:#94a3b8; font-weight:700; padding-bottom:10px; }
+    :root{
+      --bg:#eef1f6;
+      --panel:#ffffff;
+      --text:#102542;
+      --muted:#66758a;
+      --border:#d8dee8;
+      --primary:#3167e3;
+      --primary-dark:#244fb8;
+      --soft:#eef3ff;
+      --hero-grad:linear-gradient(135deg,#ff6ab7,#ffd45d);
+      --preview-bg:linear-gradient(135deg,#ff6ab7,#ffd45d);
+      --sponsor-grad:linear-gradient(90deg,#f2a4d8,#ec71b5);
+    }
 
-    /* BUILDER OVERLAY */
-    #builderModal{ position:fixed; inset:0; background:#fff; z-index:1000; padding:20px; display:none; overflow-y:auto; }
-    label{ display:block; font-size:12px; font-weight:700; margin-top:15px; color:#64748b; }
-    input, select, textarea{ width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px; margin-top:5px; }
-    .pro-locked{ background:#fef3c7; border:1px dashed #f59e0b; padding:15px; border-radius:15px; margin-top:10px; }
-    
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      padding:16px;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, Arial, sans-serif;
+    }
+
+    .wrap{
+      max-width:1280px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:440px 1fr;
+      gap:18px;
+    }
+
+    .panel, .preview-shell{
+      background:var(--panel);
+      border-radius:24px;
+      padding:18px;
+      box-shadow:0 0 0 1px rgba(0,0,0,.04);
+    }
+
+    .preview-shell{
+      background:var(--preview-bg);
+      min-height:860px;
+    }
+
+    h1,h2,h3{
+      margin:0 0 12px 0;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      line-height:1.5;
+    }
+
+    .section{
+      border-top:1px solid var(--border);
+      padding-top:14px;
+      margin-top:14px;
+    }
+
+    .label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:1px solid #ccd5e3;
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:14px;
+      background:#fff;
+      margin-bottom:10px;
+      font-family:inherit;
+    }
+
+    input[readonly]{
+      background:#f4f7fb;
+    }
+
+    textarea{
+      min-height:80px;
+      resize:vertical;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      cursor:pointer;
+      font-size:15px;
+      width:100%;
+    }
+
+    .btn-primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .btn-primary:hover{
+      background:var(--primary-dark);
+    }
+
+    .btn-light{
+      background:#eef2ff;
+      color:var(--text);
+      border:1px solid #bfd0ff;
+    }
+
+    .btn-dark{
+      background:#111827;
+      color:#fff;
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .btn-row-3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    .badge{
+      display:inline-block;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      background:#eef2ff;
+      border:1px solid #bfd0ff;
+      margin-bottom:8px;
+    }
+
+    .pill-note{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#eef2ff;
+      border:1px solid #bfd0ff;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .preview-topbar{
+      color:#fff;
+      font-size:12px;
+      text-align:center;
+      margin-bottom:12px;
+      opacity:.95;
+    }
+
+    .card-preview{
+      max-width:430px;
+      margin:0 auto;
+      background:#fff;
+      border-radius:26px;
+      overflow:hidden;
+      box-shadow:0 16px 28px rgba(0,0,0,.18);
+      font-family:inherit;
+    }
+
+    .card-page{
+      display:none;
+      padding:18px;
+    }
+
+    .card-page.active{
+      display:block;
+    }
+
+    /* PAGE 1 */
+    .p1-top{
+      display:grid;
+      grid-template-columns:128px 1fr 88px;
+      gap:14px;
+      align-items:start;
+      margin-bottom:14px;
+    }
+
+    .photo-box{
+      width:128px;
+      height:128px;
+      background:#f4f4f4;
+      overflow:hidden;
+      border-radius:2px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#444;
+      font-size:12px;
+      text-align:center;
+    }
+
+    .photo-box img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .title-box h2{
+      margin:0 0 4px 0;
+      font-size:32px;
+      line-height:1;
+    }
+
+    .title-box .name{
+      font-size:18px;
+      font-weight:700;
+      margin-top:4px;
+    }
+
+    .quick-side{
+      display:grid;
+      gap:10px;
+    }
+
+    .quick-action-box,
+    .qr-side-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:0;
+      min-height:86px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+      text-align:center;
+    }
+
+    .action-btn{
+      display:inline-block;
+      text-decoration:none;
+      background:var(--primary);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+      font-size:13px;
+    }
+
+    .qr-label{
+      font-size:11px;
+      color:#333;
+      margin-top:4px;
+    }
+
+    .main-image-box{
+      width:100%;
+      min-height:300px;
+      background:#f4f4f4;
+      border:3px solid #7d69ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      margin-top:6px;
+    }
+
+    .main-image-box img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .watermark{
+      text-align:center;
+      font-size:12px;
+      margin-top:12px;
+      color:#222;
+    }
+
+    /* PAGE 2 */
+    .icon-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-bottom:20px;
+    }
+
+    .icon-item{
+      min-height:78px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:8px;
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .icon-item .emoji{
+      font-size:24px;
+      margin-bottom:6px;
+    }
+
+    .more-info-box{
+      margin-top:18px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:0;
+      padding:14px;
+      text-align:center;
+    }
+
+    .more-info-btn{
+      display:inline-block;
+      text-decoration:none;
+      background:#ff4038;
+      color:#fff;
+      padding:12px 22px;
+      border-radius:999px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .link-preview{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:#f7f7f7;
+      border:1px solid var(--border);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      overflow:hidden;
+    }
+
+    .link-preview span{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* PAGE 3 */
+    .sponsor-title{
+      text-align:center;
+      font-size:36px;
+      font-weight:800;
+      margin-bottom:16px;
+    }
+
+    .sponsor-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .sponsor-row{
+      display:grid;
+      grid-template-columns:72px 1fr;
+      gap:12px;
+      align-items:center;
+    }
+
+    .sponsor-logo{
+      width:72px;
+      height:72px;
+      background:#fff;
+      border:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      font-size:11px;
+      text-align:center;
+    }
+
+    .sponsor-logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .sponsor-link{
+      display:block;
+      text-decoration:none;
+      padding:16px;
+      background:var(--sponsor-grad);
+      color:#111;
+      font-weight:700;
+      border-radius:0;
+      min-height:58px;
+      display:flex;
+      align-items:center;
+    }
+
+    .locked-slot{
+      padding:16px;
+      border:1px dashed #c5b4d1;
+      background:rgba(255,255,255,.45);
+      color:#666;
+      border-radius:0;
+      font-size:14px;
+      text-align:center;
+    }
+
+    /* PAGE 4 */
+    .tool-box{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:12px;
+      background:#fbfcff;
+    }
+
+    .tracker-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .nav{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      padding:14px 0 4px 0;
+      flex-wrap:wrap;
+    }
+
+    .nav button{
+      border:none;
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+      background:#eef2ff;
+      color:var(--text);
+    }
+
+    .nav button.active{
+      background:#111827;
+      color:#fff;
+    }
+
+    .pro-lock{
+      border:1px dashed #c6cddd;
+      border-radius:16px;
+      padding:14px;
+      background:#fbfcff;
+      color:#5b6577;
+      text-align:center;
+    }
+
+    .published-lock{
+      position:fixed;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#10b981;
+      color:#fff;
+      padding:10px 16px;
+      border-radius:999px;
+      font-weight:700;
+      z-index:9999;
+      display:none;
+    }
+
+    @media (max-width: 980px){
+      .wrap{
+        grid-template-columns:1fr;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="published-lock" id="publishBanner">✅ Published</div>
 
-  <div class="card-shell">
-    
-    <div class="card-page active" id="pg1">
-      <div class="hero-box">
-        <div class="profile-img" id="pvProfile">M</div>
-        <div>
-          <h2 id="pvName" style="margin:0;">Malia Bonilla</h2>
-          <div id="pvTitle" style="font-size:14px; opacity:0.9;">Product Developer</div>
+  <div class="wrap">
+    <!-- LEFT BUILDER -->
+    <div class="panel">
+      <h1>PracDi Card Builder</h1>
+      <div class="sub">
+        Basic builder first. Go Pro unlocks sponsor expansion and page 4 tools.
+      </div>
+
+      <div class="section">
+        <h3>Builder Status</h3>
+        <div class="grid-2">
+          <div>
+            <label class="label">Plan</label>
+            <input id="planStatus" type="text" value="Basic" readonly />
+          </div>
+          <div>
+            <label class="label">Updates Remaining</label>
+            <input id="updatesLeft" type="text" value="5 / 5" readonly />
+          </div>
+        </div>
+        <div class="sub">Basic includes watermark and 1 sponsor slot.</div>
+      </div>
+
+      <div class="section">
+        <h3>Card Settings</h3>
+        <div class="grid-2">
+          <div>
+            <label class="label">Color Scheme</label>
+            <select id="themeSelect">
+              <option value="pinkgold">Pink Gold</option>
+              <option value="violet">Violet Blue</option>
+              <option value="green">Green Dark</option>
+              <option value="sunset">Sunset Orange</option>
+              <option value="clean">Clean Blue</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">Font Style</label>
+            <select id="fontSelect">
+              <option value="inter">Inter</option>
+              <option value="poppins">Poppins</option>
+              <option value="montserrat">Montserrat</option>
+              <option value="playfair">Playfair</option>
+              <option value="roboto">Roboto</option>
+            </select>
+          </div>
         </div>
       </div>
-      
-      <p id="pvBio" style="font-size:14px; color:#64748b; margin:15px 0;">Digital solution developer for small businesses.</p>
-      
-      <div class="action-row">
-        <a href="#" id="pvActionBtn" class="btn-main">CALL ME</a>
-        <div id="qrcode" style="display:flex; justify-content:center;"></div>
-      </div>
 
-      <div style="font-size:10px; color:#94a3b8; text-align:center; margin-bottom:15px;">
-        Tap to copy: <span id="pvURL" style="text-decoration:underline; cursor:pointer;" onclick="copyURL()">pracdi.link/user123</span>
-      </div>
+      <div class="section">
+        <h3>Page 1 — Basic</h3>
 
-      <a href="#" id="pvSponsor1" class="sponsor-bar">
-        <div class="sponsor-logo" id="pvSponImg1"></div>
-        <div style="font-size:13px; font-weight:700;">Sponsored by <span id="pvSponName1">PracDi</span></div>
-      </a>
-    </div>
+        <label class="label">Photo / Logo Upload</label>
+        <input id="profileUpload" type="file" accept=".jpg,.jpeg,.png,.webp" />
 
-    <div class="card-page" id="pg2">
-      <h3>Contact & Socials</h3>
-      <a href="#" class="contact-line">📧 <span id="pvEmail">email@example.com</span></a>
-      <a href="#" class="contact-line">📍 <span id="pvAddr">Willemstad, Curacao</span></a>
-      <a href="#" class="contact-line">📱 <span id="pvPhone2">+5999 000000</span></a>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
-        <a href="#" class="btn-main" style="background:#1877f2;">Facebook</a>
-        <a href="#" class="btn-main" style="background:linear-gradient(45deg,#f58529,#dd2a7b);">Instagram</a>
-      </div>
-    </div>
+        <label class="label">Main Image Upload</label>
+        <input id="mainImageUpload" type="file" accept=".jpg,.jpeg,.png,.webp" />
 
-    <div class="card-page" id="pg3">
-      <h3>Digital Catalog</h3>
-      <div style="height:150px; border:2px dashed #e2e8f0; border-radius:20px; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">
-        <a href="#" class="btn-main">OPEN BROCHURE</a>
-      </div>
-      <div id="proSponsors" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="grid-2">
+          <div>
+            <label class="label">Title</label>
+            <input id="titleText" type="text" value="Title" />
+          </div>
+          <div>
+            <label class="label">Name</label>
+            <input id="nameText" type="text" value="Name" />
+          </div>
         </div>
-    </div>
 
-    <div class="card-page" id="pg4">
-      <div id="loyaltySection">
-        <h2 style="color:var(--gold);">⭐ Loyalty Campaign</h2>
-        <div id="pvCampaignImg" style="width:100%; height:200px; background:#eee; border-radius:20px; margin:15px 0;"></div>
-        <p style="font-size:14px; font-weight:600;">Scan my QR to join my loyalty program and earn rewards!</p>
-        <button class="btn-main" style="width:100%;" onclick="requestUpgrade()">START YOUR OWN CAMPAIGN</button>
+        <label class="label">Company</label>
+        <input id="companyText" type="text" value="PracDi Solutions" />
+
+        <div class="grid-2">
+          <div>
+            <label class="label">Quick Action</label>
+            <select id="actionType">
+              <option value="call">Call</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+              <option value="website">Website</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">Action Value</label>
+            <input id="actionValue" type="text" value="+59995120536" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Page 2 — Contact Details</h3>
+        <div class="grid-2">
+          <div>
+            <label class="label">Telephone</label>
+            <input id="telephone" type="text" value="+59995120536" />
+          </div>
+          <div>
+            <label class="label">Location</label>
+            <input id="location" type="text" value="Curaçao" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label">Website</label>
+            <input id="website" type="text" value="https://example.com" />
+          </div>
+          <div>
+            <label class="label">Email</label>
+            <input id="email" type="email" value="name@email.com" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label">Address</label>
+            <input id="address" type="text" value="Your Address" />
+          </div>
+          <div>
+            <label class="label">Social / @</label>
+            <input id="socialAt" type="text" value="@yourhandle" />
+          </div>
+        </div>
+
+        <label class="label">PDF / Flipbook / More Info Link</label>
+        <input id="moreInfoLink" type="text" value="https://example.com/brochure.pdf" />
+      </div>
+
+      <div class="section">
+        <h3>Page 3 — Sponsor (Basic: 1 slot)</h3>
+        <label class="label">Sponsor Logo Upload</label>
+        <input id="sponsor1Upload" type="file" accept=".jpg,.jpeg,.png,.webp" />
+
+        <label class="label">Sponsor Name</label>
+        <input id="sponsor1Name" type="text" value="Sponsor Name" />
+
+        <label class="label">Sponsor Link</label>
+        <input id="sponsor1Link" type="text" value="https://example.com" />
+      </div>
+
+      <div class="section" id="proBuilderSection" style="display:none;">
+        <h3>Go Pro — Extra Sponsor Slots & Page 4</h3>
+        <div class="sub">Upgrade unlocks sponsor slots 2 to 10 and page 4 tools.</div>
+        <div id="proSponsorFields"></div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label">Loyalty Link</label>
+            <input id="loyaltyLink" type="text" value="https://example.com/loyalty" />
+          </div>
+          <div>
+            <label class="label">Video / YouTube Link</label>
+            <input id="videoLink" type="text" value="" placeholder="https://youtube.com/..." />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label">vCard Enabled</label>
+            <select id="vcardEnabled">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">NFC Enabled</label>
+            <select id="nfcEnabled">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="applyChanges()">Preview Changes</button>
+          <button class="btn btn-light" onclick="publishCard()">Publish</button>
+        </div>
+
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-dark" onclick="goPro()">Go Pro</button>
+          <button class="btn btn-light" onclick="unlockEditMode()">Unlock Edit</button>
+        </div>
+
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-light" onclick="resetBuilder()">Reset Form</button>
+          <button class="btn btn-light" onclick="downloadVcard()">Download vCard</button>
+        </div>
       </div>
     </div>
 
-    <div class="nav-nav">
-      <button class="arrow-btn" onclick="nav(-1)">❮</button>
-      <span id="pageCounter" style="font-size:12px; font-weight:700;">1 / 3</span>
-      <button class="arrow-btn" onclick="nav(1)">❯</button>
+    <!-- RIGHT PREVIEW -->
+    <div class="preview-shell" id="previewShell">
+      <div class="preview-topbar">Live Preview</div>
+
+      <div class="card-preview" id="cardPreview">
+        <!-- PAGE 1 -->
+        <div class="card-page active" id="page1">
+          <div class="p1-top">
+            <div class="photo-box" id="profileBox">Photo / Logo</div>
+
+            <div class="title-box">
+              <h2 id="pvTitle">Title</h2>
+              <div class="name" id="pvName">Name</div>
+              <div style="margin-top:6px;font-size:14px;" id="pvCompany">PracDi Solutions</div>
+            </div>
+
+            <div class="quick-side">
+              <div class="quick-action-box">
+                <a href="#" id="quickActionBtn" class="action-btn">Call</a>
+              </div>
+
+              <div class="qr-side-box">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div id="qrcode"></div>
+                  <div class="qr-label">qr code link</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-image-box" id="mainImageBox">Main Image</div>
+
+          <div class="watermark" id="watermark">Powered by PracDi Solutions</div>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div class="card-page" id="page2">
+          <div class="icon-grid">
+            <div class="icon-item"><div class="emoji">📞</div><div>TELEPHONE</div><div id="pvTelephone" style="font-weight:400;margin-top:4px;">+599...</div></div>
+            <div class="icon-item"><div class="emoji">📍</div><div>LOCATION</div><div id="pvLocation" style="font-weight:400;margin-top:4px;">Curaçao</div></div>
+            <div class="icon-item"><div class="emoji">👤</div><div>NAME</div><div id="pvName2" style="font-weight:400;margin-top:4px;">Name</div></div>
+            <div class="icon-item"><div class="emoji">🌐</div><div>WEBSITE</div><div id="pvWebsiteText" style="font-weight:400;margin-top:4px;">visit</div></div>
+
+            <div class="icon-item"><div class="emoji">🏠</div><div>ADDRESS</div><div id="pvAddress" style="font-weight:400;margin-top:4px;">Address</div></div>
+            <div class="icon-item"><div class="emoji">✉️</div><div>EMAIL</div><div id="pvEmail" style="font-weight:400;margin-top:4px;">name@email.com</div></div>
+            <div class="icon-item"><div class="emoji">@</div><div>AT</div><div id="pvAt" style="font-weight:400;margin-top:4px;">@yourhandle</div></div>
+            <div class="icon-item"><div class="emoji">📱</div><div>CELL PHONE</div><div id="pvCellPhone" style="font-weight:400;margin-top:4px;">+599...</div></div>
+          </div>
+
+          <div class="more-info-box">
+            <a id="moreInfoBtn" class="more-info-btn" href="#" target="_blank">MORE INFO</a>
+            <div class="link-preview">
+              <span>📄</span>
+              <span id="moreInfoPreview">https://...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 3 -->
+        <div class="card-page" id="page3">
+          <div class="sponsor-title">Sponsor</div>
+          <div class="sponsor-list" id="sponsorPreviewList"></div>
+        </div>
+
+        <!-- PAGE 4 -->
+        <div class="card-page" id="page4">
+          <div class="tool-box" id="page4Lock">
+            <h3>Go Pro Required</h3>
+            <div class="sub" style="margin-bottom:0;">
+              Loyalty, vCard, NFC, time tracker, and extra sponsor tools are part of Pro.
+            </div>
+          </div>
+
+          <div id="page4ProContent" style="display:none;">
+            <div class="tool-box">
+              <h3>Loyalty Page</h3>
+              <a id="loyaltyBtn" class="action-btn" href="#" target="_blank">Open Loyalty</a>
+            </div>
+
+            <div class="tool-box">
+              <h3>Pro Features</h3>
+              <div><b>vCard:</b> <span id="showVcard">Yes</span></div>
+              <div style="margin-top:6px;"><b>NFC:</b> <span id="showNfc">Yes</span></div>
+              <div style="margin-top:6px;"><b>Video:</b> <a id="videoAnchor" href="#" target="_blank">Open Video</a></div>
+            </div>
+
+            <div class="tool-box">
+              <h3>Time Tracker</h3>
+              <div id="trackerStatus">Status: Not running</div>
+              <div id="trackerToday" style="margin-top:6px;">Today Total: 0h 0m</div>
+              <div class="tracker-row">
+                <button class="btn btn-primary" onclick="startWork()">Start Work</button>
+                <button class="btn btn-light" onclick="stopWork()">Stop Work</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button onclick="showPage(1)" id="nav1" class="active">Page 1</button>
+          <button onclick="showPage(2)" id="nav2">Page 2</button>
+          <button onclick="showPage(3)" id="nav3">Page 3</button>
+          <button onclick="showPage(4)" id="nav4">Page 4</button>
+        </div>
+      </div>
     </div>
-    <div class="watermark">powered by PracDi Solutions</div>
-    
-    <div style="padding:0 20px 20px; display:flex; gap:10px;">
-      <button class="btn-main" style="flex:1; background:#eee; color:#666; font-size:12px;" onclick="openBuilder()">Edit Card</button>
-      <button class="btn-main" style="flex:1; font-size:12px;" onclick="requestUpgrade()">Upgrade Pro</button>
-    </div>
-  </div>
-
-  <div id="builderModal">
-    <div style="display:flex; justify-content:space-between;">
-      <h2>Builder Panel</h2>
-      <button onclick="document.getElementById('builderModal').style.display='none'">✕ Close</button>
-    </div>
-
-    <div id="trialBox" style="color:var(--primary); font-weight:700;">Trials Remaining: 5/5</div>
-
-    <label>Full Name</label><input type="text" id="inName" oninput="upd()">
-    <label>Business Photo</label><input type="file" id="inPhoto" accept="image/*">
-    <label>Job Title</label><input type="text" id="inTitle" oninput="upd()">
-    <label>Short Bio</label><textarea id="inBio" oninput="upd()"></textarea>
-
-    <div class="pro-locked" id="proFields">
-      <p style="margin:0 0 10px; font-weight:700; color:#92400e;">🔒 PRO FEATURES (Enter 112344 to unlock)</p>
-      <button class="btn-main" style="background:#fbbf24; margin-bottom:10px;" onclick="checkPro()">Enter Passcode</button>
-      
-      <label>Campaign/Loyalty Image</label><input type="file" id="inCampImg">
-      <label>Extra Sponsors (Up to 4)</label>
-      <input type="text" placeholder="Sponsor 2 Name">
-      <label>Suggest a Friend</label>
-      <button class="btn-main" style="width:100%;" onclick="window.location.href='https://wa.me/59995120536?text=I want to refer a friend'">Send Referral</button>
-    </div>
-
-    <button class="btn-main" style="width:100%; margin-top:20px;" onclick="publish()">PUBLISH</button>
-    <button class="btn-main" style="width:100%; background:#25d366; margin-top:10px;" onclick="requestUpgrade()">UPGRADE VIA WHATSAPP</button>
   </div>
 
   <script>
-    let cp = 1;
-    let isPro = false;
-    let totalPages = 3;
-    let trials = 5;
+    const storeKey = "pracdi_builder_v3";
+    const maxUpdates = 5;
 
-    function nav(d){
-      cp += d;
-      if(cp < 1) cp = totalPages;
-      if(cp > totalPages) cp = 1;
-      document.querySelectorAll('.card-page').forEach(p => p.classList.remove('active'));
-      document.getElementById('pg'+cp).classList.add('active');
-      document.getElementById('pageCounter').innerText = cp + " / " + totalPages;
+    const themes = {
+      pinkgold: {
+        previewBg: "linear-gradient(135deg,#ff6ab7,#ffd45d)",
+        sponsorGrad: "linear-gradient(90deg,#ef7bc2,#f6a2ce)"
+      },
+      violet: {
+        previewBg: "linear-gradient(135deg,#6d7cff,#8f5cff)",
+        sponsorGrad: "linear-gradient(90deg,#ad8bff,#d4a4ff)"
+      },
+      green: {
+        previewBg: "linear-gradient(135deg,#10b981,#0f172a)",
+        sponsorGrad: "linear-gradient(90deg,#8ff3be,#58d68d)"
+      },
+      sunset: {
+        previewBg: "linear-gradient(135deg,#ff7eb3,#ffd166)",
+        sponsorGrad: "linear-gradient(90deg,#ff9ebc,#ffd08b)"
+      },
+      clean: {
+        previewBg: "linear-gradient(135deg,#dbeafe,#93c5fd)",
+        sponsorGrad: "linear-gradient(90deg,#b5d4ff,#d6e6ff)"
+      }
+    };
+
+    const fonts = {
+      inter: "Inter, Arial, sans-serif",
+      poppins: "Poppins, Arial, sans-serif",
+      montserrat: "Montserrat, Arial, sans-serif",
+      playfair: "'Playfair Display', serif",
+      roboto: "Roboto, Arial, sans-serif"
+    };
+
+    let state = {
+      plan: "basic",
+      updatesRemaining: 5,
+      isPublished: false,
+      profileImage: "",
+      mainImage: "",
+      sponsors: Array.from({length:10}, (_,i) => ({ logo:"", name:`Sponsor ${i+1}`, link:"" })),
+      trackerStart: null,
+      trackerMinutesToday: 0
+    };
+
+    function initProSponsorFields(){
+      const box = document.getElementById("proSponsorFields");
+      let html = "";
+      for(let i=2;i<=10;i++){
+        html += `
+          <div class="section">
+            <h4>Sponsor ${i}</h4>
+            <label class="label">Sponsor ${i} Logo Upload</label>
+            <input type="file" accept=".jpg,.jpeg,.png,.webp" onchange="handleSponsorUpload(${i-1}, this.files[0])" />
+
+            <label class="label">Sponsor ${i} Name</label>
+            <input id="sponsor${i}Name" type="text" value="Sponsor ${i}" />
+
+            <label class="label">Sponsor ${i} Link</label>
+            <input id="sponsor${i}Link" type="text" value="" placeholder="https://example.com" />
+          </div>
+        `;
+      }
+      box.innerHTML = html;
     }
 
-    function openBuilder(){
-      document.getElementById('builderModal').style.display = 'block';
+    function showPage(n){
+      [1,2,3,4].forEach(i => {
+        document.getElementById("page" + i).classList.remove("active");
+        document.getElementById("nav" + i).classList.remove("active");
+      });
+      document.getElementById("page" + n).classList.add("active");
+      document.getElementById("nav" + n).classList.add("active");
     }
 
-    function checkPro(){
-      let pin = prompt("Enter Upgrade Passcode:");
-      if(pin === "112344"){
-        isPro = true;
-        totalPages = 4;
-        document.getElementById('proFields').style.background = "#f0fdf4";
-        document.getElementById('proFields').innerHTML = "✅ PRO UNLOCKED - Loyalty & Referral Active";
-        alert("You are now an UPGRADE member. Page 4 and Referrals enabled!");
+    function fileToDataUrl(file, cb){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = e => cb(e.target.result);
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById("profileUpload").addEventListener("change", function(){
+      fileToDataUrl(this.files[0], data => {
+        state.profileImage = data;
+        saveState();
+        applyChanges();
+      });
+    });
+
+    document.getElementById("mainImageUpload").addEventListener("change", function(){
+      fileToDataUrl(this.files[0], data => {
+        state.mainImage = data;
+        saveState();
+        applyChanges();
+      });
+    });
+
+    document.getElementById("sponsor1Upload").addEventListener("change", function(){
+      fileToDataUrl(this.files[0], data => {
+        state.sponsors[0].logo = data;
+        saveState();
+        applyChanges();
+      });
+    });
+
+    function handleSponsorUpload(index, file){
+      fileToDataUrl(file, data => {
+        state.sponsors[index].logo = data;
+        saveState();
+        applyChanges();
+      });
+    }
+
+    function buildActionHref(type, value){
+      if(type === "call") return "tel:" + value;
+      if(type === "whatsapp") return "https://wa.me/" + String(value).replace(/[^\d]/g, "");
+      if(type === "email") return "mailto:" + value;
+      return value || "#";
+    }
+
+    function applyChanges(){
+      const theme = document.getElementById("themeSelect").value;
+      const font = document.getElementById("fontSelect").value;
+
+      const titleText = document.getElementById("titleText").value || "Title";
+      const nameText = document.getElementById("nameText").value || "Name";
+      const companyText = document.getElementById("companyText").value || "PracDi Solutions";
+
+      const actionType = document.getElementById("actionType").value;
+      const actionValue = document.getElementById("actionValue").value || "";
+
+      const telephone = document.getElementById("telephone").value || "";
+      const location = document.getElementById("location").value || "";
+      const website = document.getElementById("website").value || "";
+      const email = document.getElementById("email").value || "";
+      const address = document.getElementById("address").value || "";
+      const socialAt = document.getElementById("socialAt").value || "";
+      const moreInfoLink = document.getElementById("moreInfoLink").value || "#";
+
+      const sponsor1Name = document.getElementById("sponsor1Name").value || "Sponsor Name";
+      const sponsor1Link = document.getElementById("sponsor1Link").value || "#";
+
+      state.sponsors[0].name = sponsor1Name;
+      state.sponsors[0].link = sponsor1Link;
+
+      if(state.plan === "pro"){
+        for(let i=2;i<=10;i++){
+          const nameEl = document.getElementById(`sponsor${i}Name`);
+          const linkEl = document.getElementById(`sponsor${i}Link`);
+          if(nameEl) state.sponsors[i-1].name = nameEl.value || `Sponsor ${i}`;
+          if(linkEl) state.sponsors[i-1].link = linkEl.value || "#";
+        }
+      }
+
+      // theme + font
+      document.getElementById("previewShell").style.background = themes[theme].previewBg;
+      document.getElementById("cardPreview").style.fontFamily = fonts[font];
+      document.querySelector(".panel").style.fontFamily = fonts[font];
+
+      // page 1
+      document.getElementById("pvTitle").textContent = titleText;
+      document.getElementById("pvName").textContent = nameText;
+      document.getElementById("pvCompany").textContent = companyText;
+
+      if(state.profileImage){
+        document.getElementById("profileBox").innerHTML = `<img src="${state.profileImage}" alt="profile">`;
+      } else {
+        document.getElementById("profileBox").textContent = "Photo / Logo";
+      }
+
+      if(state.mainImage){
+        document.getElementById("mainImageBox").innerHTML = `<img src="${state.mainImage}" alt="main image">`;
+      } else {
+        document.getElementById("mainImageBox").textContent = "Main Image";
+      }
+
+      const quickBtn = document.getElementById("quickActionBtn");
+      quickBtn.textContent = actionType.charAt(0).toUpperCase() + actionType.slice(1);
+      quickBtn.href = buildActionHref(actionType, actionValue);
+
+      // QR
+      const qrText = website || window.location.href;
+      const qrBox = document.getElementById("qrcode");
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, {
+        text: qrText,
+        width: 72,
+        height: 72
+      });
+
+      document.getElementById("watermark").style.display = state.plan === "basic" ? "block" : "none";
+
+      // page 2
+      document.getElementById("pvTelephone").textContent = telephone;
+      document.getElementById("pvLocation").textContent = location;
+      document.getElementById("pvName2").textContent = nameText;
+      document.getElementById("pvWebsiteText").textContent = website ? "visit" : "-";
+      document.getElementById("pvAddress").textContent = address;
+      document.getElementById("pvEmail").textContent = email;
+      document.getElementById("pvAt").textContent = socialAt;
+      document.getElementById("pvCellPhone").textContent = actionValue;
+      document.getElementById("moreInfoBtn").href = moreInfoLink;
+      document.getElementById("moreInfoPreview").textContent = moreInfoLink;
+
+      // page 3 sponsors
+      renderSponsors();
+
+      // page 4
+      if(state.plan === "pro"){
+        document.getElementById("page4Lock").style.display = "none";
+        document.getElementById("page4ProContent").style.display = "block";
+
+        const loyaltyLink = document.getElementById("loyaltyLink").value || "#";
+        const videoLink = document.getElementById("videoLink").value || "#";
+        const vcardEnabled = document.getElementById("vcardEnabled").value;
+        const nfcEnabled = document.getElementById("nfcEnabled").value;
+
+        document.getElementById("loyaltyBtn").href = loyaltyLink;
+        document.getElementById("showVcard").textContent = vcardEnabled === "yes" ? "Enabled" : "No";
+        document.getElementById("showNfc").textContent = nfcEnabled === "yes" ? "Enabled" : "No";
+        document.getElementById("videoAnchor").href = videoLink;
+        document.getElementById("videoAnchor").textContent = videoLink && videoLink !== "#" ? "Open Video" : "Not set";
+      } else {
+        document.getElementById("page4Lock").style.display = "block";
+        document.getElementById("page4ProContent").style.display = "none";
+      }
+
+      document.getElementById("planStatus").value = state.plan === "basic" ? "Basic" : "Pro";
+      refreshUpdatesDisplay();
+      saveState();
+    }
+
+    function renderSponsors(){
+      const container = document.getElementById("sponsorPreviewList");
+      container.innerHTML = "";
+
+      const maxVisible = state.plan === "basic" ? 1 : 10;
+
+      for(let i=0;i<maxVisible;i++){
+        const s = state.sponsors[i];
+        const row = document.createElement("div");
+        row.className = "sponsor-row";
+
+        const logo = document.createElement("div");
+        logo.className = "sponsor-logo";
+        if(s.logo){
+          logo.innerHTML = `<img src="${s.logo}" alt="sponsor logo">`;
+        } else {
+          logo.textContent = "Logo";
+        }
+
+        const link = document.createElement("a");
+        link.className = "sponsor-link";
+        link.href = s.link || "#";
+        link.target = "_blank";
+        link.textContent = s.name && s.link ? `${s.name} = link` : (s.name || `Sponsor ${i+1}`);
+
+        row.appendChild(logo);
+        row.appendChild(link);
+        container.appendChild(row);
+      }
+
+      if(state.plan === "basic"){
+        for(let i=0;i<2;i++){
+          const lock = document.createElement("div");
+          lock.className = "locked-slot";
+          lock.textContent = "Upgrade to unlock more sponsor slots";
+          container.appendChild(lock);
+        }
       }
     }
 
-    function requestUpgrade(){
-      window.location.href = "https://wa.me/59995120536?text=I want to upgrade to Pro and start a Loyalty Campaign!";
+    function refreshUpdatesDisplay(){
+      document.getElementById("updatesLeft").value = `${state.updatesRemaining} / ${maxUpdates}`;
     }
 
-    function upd(){
-      document.getElementById('pvName').innerText = document.getElementById('inName').value || "Malia Bonilla";
-      document.getElementById('pvTitle').innerText = document.getElementById('inTitle').value || "Title";
-      document.getElementById('pvBio').innerText = document.getElementById('inBio').value || "Bio...";
+    function setEditMode(enabled){
+      document.querySelectorAll("input, select, textarea").forEach(el => {
+        if(el.id !== "updatesLeft" && el.id !== "planStatus"){
+          el.disabled = !enabled;
+        }
+      });
     }
 
-    function publish(){
-      if(trials <= 0 && !isPro) return alert("Trials used up! Upgrade to continue.");
-      if(!isPro) trials--;
-      document.getElementById('trialBox').innerText = "Trials Remaining: " + trials + "/5";
-      alert("Card Published!");
-      document.getElementById('builderModal').style.display = 'none';
+    function publishCard(){
+      if(state.isPublished){
+        alert("This card is already published and currently locked.");
+        return;
+      }
+
+      if(state.updatesRemaining <= 0){
+        alert("No updates remaining.");
+        return;
+      }
+
+      applyChanges();
+      state.updatesRemaining -= 1;
+      state.isPublished = true;
+      refreshUpdatesDisplay();
+      setEditMode(false);
+      saveState();
+
+      const banner = document.getElementById("publishBanner");
+      banner.style.display = "block";
+      banner.textContent = `✅ Published • Updates left: ${state.updatesRemaining}/${maxUpdates}`;
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 2500);
     }
 
-    function copyURL(){
-      alert("Card URL copied to clipboard!");
+    function unlockEditMode(){
+      if(state.updatesRemaining <= 0){
+        alert("No updates remaining.");
+        return;
+      }
+      state.isPublished = false;
+      setEditMode(true);
+      saveState();
+
+      const banner = document.getElementById("publishBanner");
+      banner.style.display = "block";
+      banner.textContent = "✏️ Edit Mode Enabled";
+      banner.style.background = "#2563eb";
+      setTimeout(() => {
+        banner.style.display = "none";
+        banner.style.background = "#10b981";
+      }, 2200);
     }
 
-    // Photo Handler
-    document.getElementById('inPhoto').onchange = function(e){
-      let r = new FileReader();
-      r.onload = () => document.getElementById('pvProfile').innerHTML = `<img src="${r.result}">`;
-      r.readAsDataURL(e.target.files[0]);
-    };
+    function goPro(){
+      const code = prompt("Enter Pro Code");
+      if(!code || !code.trim()){
+        return;
+      }
 
-    window.onload = () => {
-      new QRCode(document.getElementById("qrcode"), { text: "https://pracdi.link/user123", width: 80, height: 80 });
-    };
+      // manual control placeholder:
+      state.plan = "pro";
+      document.getElementById("proBuilderSection").style.display = "block";
+      document.getElementById("page4Lock").style.display = "none";
+      document.getElementById("page4ProContent").style.display = "block";
+      saveState();
+      applyChanges();
+
+      alert("Pro unlocked.");
+    }
+
+    function downloadVcard(){
+      if(state.plan !== "pro"){
+        alert("vCard download is part of Pro.");
+        return;
+      }
+
+      const name = document.getElementById("nameText").value || "Name";
+      const company = document.getElementById("companyText").value || "";
+      const telephone = document.getElementById("telephone").value || "";
+      const email = document.getElementById("email").value || "";
+      const website = document.getElementById("website").value || "";
+      const address = document.getElementById("address").value || "";
+
+      const vcf = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+ORG:${company}
+TEL:${telephone}
+EMAIL:${email}
+URL:${website}
+ADR:;;${address}
+END:VCARD`;
+
+      const blob = new Blob([vcf], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${name.replace(/\s+/g, "_")}.vcf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function startWork(){
+      if(state.plan !== "pro"){
+        alert("Time tracker is part of Pro.");
+        return;
+      }
+      if(state.trackerStart) return;
+      state.trackerStart = new Date().toISOString();
+      document.getElementById("trackerStatus").textContent = "Status: Running...";
+      saveState();
+    }
+
+    function stopWork(){
+      if(state.plan !== "pro") return;
+      if(!state.trackerStart) return;
+
+      const start = new Date(state.trackerStart);
+      const now = new Date();
+      const minutes = Math.round((now - start) / 60000);
+
+      state.trackerMinutesToday += minutes;
+      state.trackerStart = null;
+
+      const h = Math.floor(state.trackerMinutesToday / 60);
+      const m = state.trackerMinutesToday % 60;
+      document.getElementById("trackerStatus").textContent = "Status: Not running";
+      document.getElementById("trackerToday").textContent = `Today Total: ${h}h ${m}m`;
+
+      saveState();
+    }
+
+    function resetBuilder(){
+      localStorage.removeItem(storeKey);
+      location.reload();
+    }
+
+    function saveState(){
+      localStorage.setItem(storeKey, JSON.stringify(state));
+    }
+
+    function loadState(){
+      const saved = localStorage.getItem(storeKey);
+      if(saved){
+        try{
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        } catch(e){}
+      }
+
+      document.getElementById("planStatus").value = state.plan === "basic" ? "Basic" : "Pro";
+      document.getElementById("updatesLeft").value = `${state.updatesRemaining} / ${maxUpdates}`;
+
+      if(state.plan === "pro"){
+        document.getElementById("proBuilderSection").style.display = "block";
+      }
+
+      if(state.isPublished){
+        setEditMode(false);
+      } else {
+        setEditMode(true);
+      }
+    }
+
+    function init(){
+      initProSponsorFields();
+      loadState();
+
+      if(state.profileImage){
+        // keep state, preview will pick it up
+      }
+      if(state.mainImage){
+        // keep state, preview will pick it up
+      }
+
+      if(state.plan === "pro"){
+        document.getElementById("page4Lock").style.display = "none";
+        document.getElementById("page4ProContent").style.display = "block";
+      }
+
+      if(state.trackerStart){
+        document.getElementById("trackerStatus").textContent = "Status: Running...";
+      }
+
+      const h = Math.floor(state.trackerMinutesToday / 60);
+      const m = state.trackerMinutesToday % 60;
+      document.getElementById("trackerToday").textContent = `Today Total: ${h}h ${m}m`;
+
+      applyChanges();
+      showPage(1);
+    }
+
+    init();
   </script>
 </body>
 </html>
